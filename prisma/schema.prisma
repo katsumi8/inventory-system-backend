@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String        @id @default(uuid())
+  name               String
+  email              String        @unique
+  password           String
+  role               RoleEnumType? @default(user)
+  verificationCode   String?       @unique @db.Text
+  verified           Boolean       @default(false)
+  provider           String        @default("local")
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  orders             Order[]
+  passwordResetToken String?
+  passwordResetAt    DateTime?
+
+  @@index([email, verificationCode])
+
+  @@map("users")
+}
+
+enum RoleEnumType {
+  user
+  admin
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  unitPrice   Int
+  order       Order?    @relation(fields: [orderId], references: [id])
+  orderId     String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  stock       Stock?
+
+  @@map("products")
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String
+  products Product[]
+
+  @@map("categories")
+}
+
+model Stock {
+  id           String   @id @default(uuid())
+  quantity     Int
+  updatedAt    DateTime @updatedAt
+  productId    String   @unique
+  reorderLevel Int
+  product      Product  @relation(fields: [productId], references: [id])
+
+  @@map("stocks")
+}
+
+model Supplier {
+  id             String            @id @default(uuid())
+  name           String
+  contacts       SupplierContact[]
+  orderedRecords Order[]
+
+  @@map("suppliers")
+}
+
+model SupplierContact {
+  id         String   @id @default(uuid())
+  name       String
+  phone      String
+  email      String   @unique
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  supplierId String
+
+  @@map("supplier_contacts")
+}
+
+model Order {
+  id            String    @id @default(uuid())
+  quantity      Int
+  dateOrdered   DateTime  @default(now())
+  dateDelivered DateTime
+  products      Product[]
+  supplier      Supplier  @relation(fields: [supplierId], references: [id])
+  supplierId    String
+  orderedBy     User      @relation(fields: [userId], references: [id])
+  userId        String
+
+  @@map("orders")
+}
