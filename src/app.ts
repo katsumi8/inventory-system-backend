@@ -8,6 +8,7 @@ import connectDB from "./utils/prisma";
 import userRouter from "./routes/user.route";
 import authRouter from "./routes/auth.route";
 import sessionRouter from "./routes/session.route";
+import productRouter from "./routes/product.route";
 import validateEnv from "./utils/validateEnv";
 import rateLimit from "express-rate-limit";
 
@@ -51,7 +52,7 @@ async function bootstrap() {
   app.use("/api/users", userRouter);
   app.use("/api/auth", authRouter);
   app.use("/api/sessions", sessionRouter);
-
+  app.use("/api/products", productRouter);
   app.get("/api/healthChecker", (req: Request, res: Response) => {
     res.status(200).json({
       status: "success",

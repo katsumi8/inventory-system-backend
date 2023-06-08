@@ -1,14 +1,14 @@
-// import express from "express";
-// import * as employeeController from "../controllers/employee.controller";
+import express from "express";
+import * as productsController from "../controllers/product.controller";
 
-// const router = express.Router();
+const router = express.Router();
 
 // /* GET employees. */
-// router.get("/", employeeController.get);
+router.get("/", productsController.get);
 // router.get("/byEmail", employeeController.getByEmail);
 
 // /* POST employee */
-// router.post("/", employeeController.post);
+router.post("/", productsController.post);
 
 // /* PUT employee */
 // router.put("/:id", employeeController.update);
@@ -16,4 +16,4 @@
 // /* DELETE employee */
 // router.delete("/:id", employeeController.remove);
 
-// export default router;
+export default router;
