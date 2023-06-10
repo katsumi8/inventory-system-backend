@@ -43,6 +43,14 @@ model Order {
   orderLines      OrderLine[]
   User            User?       @relation(fields: [userId], references: [id])
   userId          String?
+  status          OrderStatus @default(processing)
+}
+
+enum OrderStatus {
+  pending
+  processing
+  completed
+  cancelled
 }
 
 model OrderLine {

@@ -1,25 +1,40 @@
+import { Prisma } from "@prisma/client";
 import { Response, Request } from "express";
+import { CreateProductInput } from "../schema/product.schema";
 import { prisma } from "../utils/prisma";
 
 // GET /products
 export async function get(req: Request, res: Response) {
-  const products = await prisma.product.findMany();
+  try {
+    const products = await prisma.product.findMany();
 
-  return res.status(200).json({ data: products, errors: [] });
+    return res.status(200).json({ data: products, errors: [] });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // POST /products
-export async function post(req: Request, res: Response) {
-  const { name, unit, price, category } = req.body;
+export async function post(
+  req: Request<{}, {}, CreateProductInput>,
+  res: Response
+) {
+  const productCreateInput = req.body;
 
-  const product = await prisma.product.create({
-    data: {
-      category,
-      name,
-      unit,
-      price,
-    },
-  });
+  try {
+    await prisma.product.create({
+      data: {
+        ...productCreateInput,
+        salesPrice: Number(productCreateInput.salesPrice),
+        openingStockValue: Number(productCreateInput.openingStockValue),
+        purchasePrice: Number(productCreateInput.purchasePrice),
+      },
+    });
 
-  return res.status(200).json({ data: product, errors: [] });
+    return res
+      .status(200)
+      .json({ code: "OK", message: "Product created successfully" });
+  } catch (error) {
+    console.log(error);
+  }
 }
