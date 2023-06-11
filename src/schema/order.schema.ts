@@ -8,7 +8,7 @@ export const createOrderSchema = z.object({
       .array(
         z.object({
           quantity: z.number().min(1, "Quantity must be at least 1"),
-          productId: z.number().min(1, "Product Id is required"),
+          productId: z.string().min(1, "Product Id is required"),
         })
       )
       .min(1, "At least one order line item is required"),

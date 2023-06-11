@@ -1,9 +1,9 @@
 import express from "express";
 import { validate } from "../middlewares/validate";
-import { createProductSchema } from "../schema/product.schema";
 import * as orderController from "../controllers/order.controller";
 import { requireUser } from "../middlewares/requireUser";
 import { deserializeUser } from "../middlewares/deserializeUser";
+import { createOrderSchema } from "../schema/order.schema";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.post(
   "/",
   deserializeUser,
   requireUser,
-  validate(createProductSchema),
+  validate(createOrderSchema),
   orderController.post
 );
 
